@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes ripple-animation {
+  from {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0.7;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+}
+
+.shake {
+  animation: shake 0.5s ease;
+  outline: 2px solid red;
+}
+
+
+@font-face {
+  font-family: "Playwrite";
+  src: url("../fonts/playwrite.ttf");
+}
