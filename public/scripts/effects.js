@@ -2,9 +2,9 @@ const muteCheck = document.getElementById("muteCheck");
 
 function playSoundEffect() {
   if (muteCheck.checked) return;
-
-  const soundInstance = new Audio("../sfx/ripple.wav");
-  soundInstance.play();
+  
+  // Create and play a new audio instance immediately
+  new Audio("../sfx/ripple.wav").play();
 }
 
 function addRippleEffect(screamElement) {
