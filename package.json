@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "uWebSockets.js": "github:uNetworking/uWebSockets.js#1977b5039938ad863d42fc4958d48c17e5a1fa06"
+    "express": "^5.2.1",
+    "ws": "^8.19.0"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.16"

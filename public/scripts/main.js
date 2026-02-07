@@ -1,7 +1,8 @@
 import { triggerShakeEffect, playSoundEffect } from "./effects.js";
 import { displayScream, simulateScream } from "./scream.js";
 
-const ws = new WebSocket("wss://scream-o.koyeb.app/screamo");
+const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+const ws = new WebSocket(`${protocol}//${window.location.host}/screamo`);
 
 const elements = {
   screamsContainer: document.getElementById("screamsContainer"),
