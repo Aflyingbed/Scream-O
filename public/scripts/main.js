@@ -43,12 +43,13 @@ function handleFormSubmit(e) {
 
 ws.onmessage = (event) => {
   const data = JSON.parse(event.data);
-  if (data.type === "screamForClient") {
-    const latestScream = data.screams[data.screams.length - 1];
-    if (latestScream) {
-      displayScream(latestScream, elements.screamsContainer);
-      playSoundEffect();
-    }
+  
+  if (data.type === "initialScreams") {
+    // Optional: could display the history here, 
+    // but the original logic only cared about new screams
+  } else if (data.type === "newScream") {
+    displayScream(data.scream, elements.screamsContainer);
+    playSoundEffect();
   }
 };
 

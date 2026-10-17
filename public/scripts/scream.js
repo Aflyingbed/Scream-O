@@ -70,9 +70,23 @@ function getRandomScream() {
   return SIMULATION_SCREAMS[Math.floor(Math.random() * SIMULATION_SCREAMS.length)];
 }
 
+function clamp(val, min, max, defaultVal) {
+  const num = parseInt(val, 10);
+  if (isNaN(num)) return defaultVal;
+  return Math.min(Math.max(num, min), max);
+}
+
 function simulateScream(ws) {
-  const intensity = document.getElementById("intensitySlider").value;
-  const loopDuration = document.getElementById("loopSlider").value;
+  const intensityInput = document.getElementById("intensitySlider");
+  const loopInput = document.getElementById("loopSlider");
+
+  const intensity = clamp(intensityInput ? intensityInput.value : 1, 1, 10, 1);
+  const loopDuration = clamp(loopInput ? loopInput.value : 1, 1, 3, 1);
+
+  // Sync inputs back in case user edited them via DevTools to absurd values
+  if (intensityInput) intensityInput.value = intensity;
+  if (loopInput) loopInput.value = loopDuration;
+
   const startTime = Date.now();
 
   function sendSimulatedScream() {

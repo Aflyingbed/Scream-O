@@ -14,27 +14,43 @@ const MAX_SCREAMS = 20;
 app.use(express.static(path.join(__dirname, "public")));
 
 wss.on("connection", (ws) => {
-  // Send existing screams to the new client
-  ws.send(JSON.stringify({ type: "screamForClient", screams }));
+  // Track message timestamps for rate limiting (max 15 messages per second per client)
+  ws.messageTimestamps = [];
+
+  // Send initial history to the new client
+  ws.send(JSON.stringify({ type: "initialScreams", screams }));
 
   ws.on("message", (data) => {
     try {
+      const now = Date.now();
+      ws.messageTimestamps = ws.messageTimestamps.filter((t) => now - t < 1000);
+      if (ws.messageTimestamps.length >= 15) {
+        // Drop message if user is spamming above limits
+        return;
+      }
+      ws.messageTimestamps.push(now);
+
       const incomingScream = JSON.parse(data.toString());
 
-      if (incomingScream.type === "screams") {
-        screams.push(incomingScream.scream);
+      if (incomingScream.type === "screams" && typeof incomingScream.scream === "string") {
+        const trimmed = incomingScream.scream.trim();
+        if (!trimmed || trimmed.length > 30) {
+          return;
+        }
+
+        const newScream = trimmed;
+        screams.push(newScream);
         if (screams.length > MAX_SCREAMS) {
           screams.shift();
         }
 
-        // Broadcast to all connected clients
         const broadcastData = JSON.stringify({
-          type: "screamForClient",
-          screams,
+          type: "newScream",
+          scream: newScream,
         });
 
         wss.clients.forEach((client) => {
-          if (client.readyState === 1) { // 1 = OPEN
+          if (client.readyState === 1) {
             client.send(broadcastData);
           }
         });
@@ -45,7 +61,7 @@ wss.on("connection", (ws) => {
   });
 });
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
